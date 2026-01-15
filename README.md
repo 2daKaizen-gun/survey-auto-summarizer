@@ -18,3 +18,4 @@
 - [v] Phase 1-2: Google Cloud Console
 - [v] Phase 1-3: Create Service Account
 - [v] Phase 1-4: Configuring the Development Environment
+- [v] Phase 1-5: Confirmation of technology stack
