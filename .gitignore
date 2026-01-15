@@ -1,0 +1,17 @@
+# 구글 인증키 파일 (절대 업로드 금지)
+credentials.json
+
+# 파이썬 가상환경
+venv/
+.venv/
+
+# 파이썬 캐시 및 컴파일 파일
+__pycache__/
+*.py[cod]
+
+# 환경 변수 파일 (나중에 쓸 수도 있음)
+.env
+
+# 운영체제 임시 파일
+.DS_Store
+Thumbs.db
