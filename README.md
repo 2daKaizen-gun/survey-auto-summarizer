@@ -20,3 +20,4 @@
 - [v] Phase 1-4: Configuring the Development Environment
 - [v] Phase 1-5: Confirmation of technology stack
 - [v] Phase 2-1: API Interworking Test
+- [v] Phase 2-2: Pandas preprocessing logic
