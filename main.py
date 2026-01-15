@@ -23,7 +23,7 @@ def main():
     values = result.get('values', [])
 
     if not values:
-        print("❌ 처리할 데이터가 없습니다.")
+        print("처리할 데이터가 없습니다.")
         return
 
     # [2] 데이터 정규화 (Data Normalization)
@@ -37,21 +37,31 @@ def main():
     # [3] Pandas DataFrame 생성
     df = pd.DataFrame(normalized_data, columns=headers)
 
-    # [4] 데이터 정제 및 추출 (Cleaning)
-    # AI가 요약할 대상인 '느낀 점' 컬럼만 추출 (결측치 제거)
+    # [4] 요약 대상 필터링 (AI 요약 결과가 비어있는 행만 추출)
+    output_column = 'AI 요약 결과(Output)'
     target_column = '느낀 점(100자 이상)'
-    
-    if target_column in df.columns:
-        # 내용이 비어있지 않은 데이터만 필터링(.str.strip() != '')
-        feedback_series = df[df[target_column].str.strip() != ''][target_column]
-        
-        print(f"✅ 총 {len(feedback_series)}개의 유효한 응답을 확인했습니다.")
-        
-        # 실제 데이터 상위 3개만 깔끔하게 확인
-        for i, text in enumerate(feedback_series.head(3)):
-            print(f"[{i+1}] {text[:50]}...")
+
+    # 'AI 요약 결과'가 비어 있는 행만 골라냅니다 (새로 들어온 데이터)
+    new_data_mask = df[output_column].str.strip() == ''
+    new_df = df[new_data_mask]
+
+    print(f"전체 응답: {len(df)}개 | 요약이 필요한 신규 응답: {len(new_df)}개")
+
+    # [5] 반복문을 돌며 개별 데이터 매핑
+    if not new_df.empty:
+        for index, row in new_df.iterrows():
+            #중요: 실제 구글 시트의 행 번호 (Pandas 인덱스 + 헤더(1) + 1 = index + 2)
+            sheet_row_num = index + 2 
+            
+            feedback = row[target_column].strip()
+            
+            if feedback:
+                print(f"[시트 {sheet_row_num}행] 처리 대기: {row['성함을 알려주세요.']} 님")
+                # (여기에 나중에 Phase 3의 AI 요약 함수를 호출할 예정입니다)
+            else:
+                print(f"[시트 {sheet_row_num}행] 내용이 없어 건너뜁니다.")
     else:
-        print(f"❌ '{target_column}' 컬럼을 찾을 수 없습니다.")
+        print("모든 데이터가 이미 요약되어 처리할 내용이 없습니다.")
 
 if __name__ == '__main__':
     main()
