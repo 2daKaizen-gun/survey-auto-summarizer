@@ -1,6 +1,6 @@
 # 📋 survey-auto-summarizer
 
-구글 폼 응답 자동 분석 및 요약 도구입니다.
+구글 폼 응답 자동 분석(analyze) 및 요약 도구입니다.
 
 ## 📊 Planning and building
 - **데이터 소스**: 구글 폼 (행사 참석 여부 및 활동 마무리 후기)
