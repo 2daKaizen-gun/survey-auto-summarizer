@@ -7,7 +7,7 @@ from googleapiclient.discovery import build
 # 1. 설정 정보
 SERVICE_ACCOUNT_FILE = 'credentials.json'
 SPREADSHEET_ID = '1Ceks16DvtW0FduRUMnHxK6GYcx2EPXocZlz7KPawZMY' 
-RANGE_NAME = '설문지 응답 시트1!A1:G' # 전체 행을 읽어오도록 설정
+RANGE_NAME = '설문지 응답 시트1!A1:H' # 전체 행을 읽어오도록 설정
 
 def get_sheets_service():
     """구글 시트 API 인증 및 서비스 생성"""
@@ -42,7 +42,7 @@ def main():
         df = pd.DataFrame(normalized_data, columns=headers)
 
         # [3] 신규 데이터 필터링 로직
-        new_data_mask = df['AI 요약 결과(Output)'].str.strip() == ''
+        new_data_mask = df['AI요약 결과'].str.strip() == ''
         new_df = df[new_data_mask]
 
         if new_df.empty:
@@ -53,14 +53,14 @@ def main():
             try:
                 #실제 구글 시트의 행 번호 (Pandas 인덱스 + 헤더(1) + 1 = index + 2)
                 sheet_row_num = index + 2 
-                feedback = row['느낀 점(100자 이상)'].strip()
+                feedback = row['느낀 점 (100자 이상)'].strip()
                 
                 if not feedback:
                     print(f"[{sheet_row_num}행] 내용 없음 - 스킵")
                     continue
                     # (여기에 나중에 Phase 3의 AI 요약 함수)
 
-                print(f"[{sheet_row_num}행] {row['성함을 알려주세요.']}님 데이터 처리 중...")
+                print(f"[{sheet_row_num}행] {row['성함']}님({row['국적']}) 데이터 처리 준비...")
             
                 # [4] API 할당량 관리 (Rate Limiting)
                 # 너무 빠르게 요청하면 구글이 차단할 수 있으므로 1초씩 쉬어줍니다.
