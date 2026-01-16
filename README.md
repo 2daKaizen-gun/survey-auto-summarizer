@@ -1,6 +1,6 @@
 # 📋 survey-auto-summarizer
 
-구글 폼 응답 자동 요약 도구입니다.
+구글 폼 응답 자동 분석 및 요약 도구입니다.
 
 ## 📊 Planning and building
 - **데이터 소스**: 구글 폼 (행사 참석 여부 및 활동 마무리 후기)
@@ -11,8 +11,8 @@
   4. 성별
   5. 국적 (객관식)
   6. 학번
-  7. **느낀점 100자 이상** (AI 분석 대상)
-  8. **AI요약 결과** (결과 기록 열)
+  7. **느낀점 100자 이상**
+  8. **AI분석 결과** (Aggregate Insights)
 
 ##  🛠️ Technology Stack
 - **Language**: Python 3.14.0
