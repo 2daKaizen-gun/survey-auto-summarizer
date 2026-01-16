@@ -19,21 +19,21 @@
 - **AI Engine**: Google Gemini 1.5 Flash (예정)
 
 ## ✅ Milestone
-Phase 1: Planning and building a Google cloud environment
-[v] Phase 1-1: Determining Project Scope
-[v] Phase 1-2: Google Cloud Console
-[v] Phase 1-3: Create Service Account & credentials.json
-[v] Phase 1-4: Configuring the Development Environment (.gitignore, venv)
-[v] Phase 1-5: Confirmation of technology stack (requirements.txt)
+- Phase 1: Planning and building a Google cloud environment
+  - [v] Phase 1-1: Determining Project Scope
+  - [v] Phase 1-2: Google Cloud Console
+  - [v] Phase 1-3: Create Service Account & credentials.json
+  - [v] Phase 1-4: Configuring the Development Environment (.gitignore, venv)
+  - [v] Phase 1-5: Confirmation of technology stack (requirements.txt)
 
-Phase 2: Implementing Google Sheet Data Pipeline
-[v] Phase 2-1: API Interworking Test (Data Load)
-[v] Phase 2-2: Pandas preprocessing logic (Data Normalization & Padding)
-[v] Phase 2-3: Real-time data response (Filtering unprocessed rows)
-[v] Phase 2-4: Error Handling (Try-Except, time.sleep)
+- Phase 2: Implementing Google Sheet Data Pipeline
+  - [v] Phase 2-1: API Interworking Test (Data Load)
+  - [v] Phase 2-2: Pandas preprocessing logic (Data Normalization & Padding)
+  - [v] Phase 2-3: Real-time data response (Filtering unprocessed rows)
+  - [v] Phase 2-4: Error Handling (Try-Except, time.sleep)
 
-Phase 3: AI Summary Engine and Results Feedback(Next)
-[ ] Phase 3-1: Prompt Engineering
-[ ] Phase 3-2: Interworking with AI API
-[ ] Phase 3-3: Automatic recording of results
-[ ] Phase 3-4: Create Final README
+- Phase 3: AI Summary Engine and Results Feedback(Next)
+  - [ ] Phase 3-1: Prompt Engineering
+  - [ ] Phase 3-2: Interworking with AI API
+  - [ ] Phase 3-3: Automatic recording of results
+  - [ ] Phase 3-4: Create Final README
