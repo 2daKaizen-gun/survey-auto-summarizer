@@ -1,8 +1,13 @@
 import pandas as pd
-import time
+# import time
+import os
+from dotenv import load_dotenv  # 환경 변수 로드용
 import google.generativeai as genai
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
+
+# .env 파일에 저장된 환경 변수를 불러옵니다.
+load_dotenv()
 
 # 1. 설정 정보
 SERVICE_ACCOUNT_FILE = 'credentials.json'
@@ -10,7 +15,8 @@ SPREADSHEET_ID = '1Ceks16DvtW0FduRUMnHxK6GYcx2EPXocZlz7KPawZMY'
 RANGE_NAME = '설문지 응답 시트1!A1:H' # 전체 행을 읽어오도록 설정
 
 # Gemini API 설정
-GEMINI_API_KEY = "AIzaSyD9kiUv8tUl8iWU8lBIAO1WEcpMEhNSDmM"
+# 보안 강화: 코드가 아닌 환경 변수에서 키를 가져옵니다.
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=GEMINI_API_KEY)
 
 def get_sheets_service():
@@ -55,6 +61,31 @@ def generate_batch_insight(df):
     response = model.generate_content(prompt)
     return response.text.strip()
 
+def update_sheet_report(service, spreadsheet_id, report_text, last_row):
+    """
+    생성된 종합 리포트를 데이터 하단에 기록합니다.
+    """
+    # 데이터가 끝나는 행(last_row)보다 2칸 아래부터 기록 시작
+    target_row = last_row + 3 
+    target_range = f'설문지 응답 시트1!A{target_row}' 
+    
+    body = {
+        'values': [
+            ["AI 종합 인사이트 리포트"], # 제목 행 (A열)
+            [report_text]              # 내용 행 (A열)
+        ]
+    }
+    
+    # 구글 시트에 데이터 쓰기 실행
+    service.spreadsheets().values().update(
+        spreadsheetId=spreadsheet_id,
+        range=target_range,
+        valueInputOption="USER_ENTERED", # 줄바꿈(\n) 등을 시트에서 인식하도록 설정
+        body=body
+    ).execute()
+    
+    print(f"구글 시트 {target_range} 위치에 리포트 기록을 완료했습니다.")
+
 def main():
     # [1] 데이터 로드
     try:
@@ -80,7 +111,7 @@ def main():
         # Pandas DataFrame 생성
         df = pd.DataFrame(normalized_data, columns=headers)
 
-       # [3] 데이터 현황 확인
+        # [3] 데이터 현황 확인
         print(f"총 {len(df)}개의 데이터를 기반으로 종합 분석을 시작합니다...")
 
         # [4] 종합 인사이트 생성 (배치 처리)
@@ -89,18 +120,17 @@ def main():
         
         try:
             final_report = generate_batch_insight(df)
+            print("-" * 50 + "\n" + final_report + "\n" + "-" * 50)
             
-            print("\n" + "="*50)
-            print("[종합 분석 리포트 결과]")
-            print("-" * 50)
-            print(final_report)
-            print("="*50 + "\n")
+            # [5] 시트에 결과 기록 
+            last_data_row = len(df) + 1 
+            update_sheet_report(service, SPREADSHEET_ID, final_report, last_data_row)
             
         except Exception as ai_error:
-            print(f"AI 분석 중 에러 발생: {ai_error}")
+            print(f"AI 분석/기록 에러: {ai_error}")
 
     except Exception as fatal_error:
-        print(f"시스템 치명적 에러: {fatal_error}")
+        print(f"시스템 에러: {fatal_error}")
 
 if __name__ == '__main__':
     main()
