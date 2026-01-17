@@ -23,10 +23,10 @@
 - **Language**: Python 3.14.0
 
 - **Libraries**: 
-Pandas: 데이터 정규화 및 전처리를 위한 데이터 프레임 핸들링
-google-api-python-client: Google Sheets API 연동 및 데이터 Read/Write
-google-generativeai: Gemini AI 모델 연동 및 프롬프트 제어
-python-dotenv: API Key 등 민감 정보의 환경 변수 관리
+  - Pandas: 데이터 정규화 및 전처리를 위한 데이터 프레임 핸들링
+  - google-api-python-client: Google Sheets API 연동 및 데이터 Read/Write
+  - google-generativeai: Gemini AI 모델 연동 및 프롬프트 제어
+  - python-dotenv: API Key 등 민감 정보의 환경 변수 관리
 
 - **AI Engine**: Google Gemini 2.0 Flash (stable)
 
