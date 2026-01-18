@@ -70,10 +70,6 @@ An AI-powered insight pipeline that automates Google Forms data analysis and rep
   - [x] Phase 3-3: Automatic recording of results
   - [x] Phase 3-4: Create Final README
 
-## 📈 Results
-- **Efficiency**: Reduced survey analysis and summary time by over 95% compared to manual labor.
-- **Accuracy**: Successfully extracted nuanced insights based on nationality and gender, providing a data-driven foundation for future program planning.
-
 ## 🔥 Troubleshooting & Lessons Learned
 **1. AI Model & Quota Management (404 & 429 Errors)**
   - **Challenge**: Encountered 404 errors due to deprecated model identifiers and 429 errors from free-tier quota limits.
@@ -89,6 +85,10 @@ An AI-powered insight pipeline that automates Google Forms data analysis and rep
   - **Challenge**: Inconsistent column counts due to empty cells in Google Sheets caused DataFrame construction errors.
 
   - **Resolution**: Implemented a data padding logic to ensure structural consistency across all input rows.
+
+## 📈 Results
+- **Efficiency**: Reduced survey analysis and summary time by over 95% compared to manual labor.
+- **Accuracy**: Successfully extracted nuanced insights based on nationality and gender, providing a data-driven foundation for future program planning.
 
 ## 🧐 Self-Reflection
 - **Technical Growth**
