@@ -65,19 +65,19 @@ An AI-powered insight pipeline that automates Google Forms data analysis and rep
 
 ## 🔥 Troubleshooting & Lessons Learned
 **1. AI Model & Quota Management (404 & 429 Errors)**
-  - Challenge: Encountered 404 errors due to deprecated model identifiers and 429 errors from free-tier quota limits.
+  - **Challenge**: Encountered 404 errors due to deprecated model identifiers and 429 errors from free-tier quota limits.
 
-  - Resolution: Debugged using genai.list_models() to identify stable identifiers and switched to gemini-flash-latest. Optimized API consumption by implementing batch processing instead of individual row calls.
+  - **Resolution**: Debugged using genai.list_models() to identify stable identifiers and switched to gemini-flash-latest. Optimized API consumption by implementing batch processing instead of individual row calls.
 
 **2. Security Incident Response (Secret Management)**
-  - Challenge: Exposed API keys detected by GitHub Secret Scanning.
+  - **Challenge**: Exposed API keys detected by GitHub Secret Scanning.
 
-  - Resolution: Immediately revoked and rotated the exposed keys. Implemented a secure environment variable system using .env and cleaned git history to prevent future leaks.
+  - **Resolution**: Immediately revoked and rotated the exposed keys. Implemented a secure environment variable system using .env and cleaned git history to prevent future leaks.
 
 **3. Data Normalization & Consistency**
-  - Challenge: Inconsistent column counts due to empty cells in Google Sheets caused DataFrame construction errors.
+  - **Challenge**: Inconsistent column counts due to empty cells in Google Sheets caused DataFrame construction errors.
 
-  - Resolution: Implemented a data padding logic to ensure structural consistency across all input rows.
+  - **Resolution**: Implemented a data padding logic to ensure structural consistency across all input rows.
 
 ## 🧐 Self-Reflection
 - **Technical Growth**
