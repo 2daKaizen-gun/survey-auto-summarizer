@@ -1,9 +1,24 @@
 # 📋 survey-auto-summarizer
 
-구글 폼 응답 자동 분석(analysis) 및 요약 도구입니다.
+An AI-powered insight pipeline that automates Google Forms data analysis and reporting using Gemini AI and Google Sheets API.
 
-## 📊 Planning and building
-- 본 프로젝트는 대학교 내 국제 프로그램 행사 후 얻은 대량의 설문 데이터를 수작업으로 요약, 정리 및 분석하는 번거로움을 해결하기 위해 기획되었습니다.
+## 🎯 Background & Motivation
+- The Context
+  Following a large-scale International Exchange Program at the university, an extensive satisfaction survey was conducted. Due to the diverse background of the participants, the survey collected a vast amount of subjective feedback in multiple languages.
+
+- The Problem
+  Data Overload: Manually reading and summarizing hundreds of student reviews (minimum 100 characters each) required immense time and energy.
+
+  Analysis Complexity: It was difficult for    humans to cross-analyze patterns based on nationality, gender, and participation status to find meaningful insights.
+
+  Data Abandonment: Valuable feedback often remained scattered in spreadsheets, making it difficult to utilize as "lessons learned" for future program planning.
+
+- The Solution
+  Automated Pipeline: Built a system that loads real-time data from Google Sheets for immediate processing.
+
+  AI Cross-Analysis: Leveraged Gemini AI to analyze cultural differences (e.g., language barriers for specific nationalities) and participation trends.
+
+  Automated Feedback: Analysis reports are automatically written back to the source spreadsheet for stakeholder review.
 
 - **데이터 소스**: 구글 폼 (행사 참석 여부 및 활동 마무리 후기)
 
@@ -17,20 +32,16 @@
   7. **느낀점 (100자 이상)**
   8. **AI분석 결과** (Aggregate Insights)
 
-- 단순 요약을 넘어 국적, 성별, 행사 참석 여부에 따른 통계적 인사이트를 AI가 직접 도출, 시트에 재 기록하여 End-to-End 자동화 파이프라인을 구축했습니다.
-
 ##  🛠️ Technology Stack
 - **Language**: Python 3.14.0
 
-- **Libraries**: 
-  - Pandas: 데이터 정규화 및 전처리를 위한 데이터 프레임 핸들링
-  - google-api-python-client: Google Sheets API 연동 및 데이터 Read/Write
-  - google-generativeai: Gemini AI 모델 연동 및 프롬프트 제어
-  - python-dotenv: API Key 등 민감 정보의 환경 변수 관리
+- **Data Handling**: Pandas(Normalization & Padding)
 
-- **AI Engine**: Google Gemini 2.0 Flash (stable)
+- **API Integration**: Google Sheets API v4
 
-- **Security**: 환경 변수 기반 인증 관리
+- **AI Engine**: Google Gemini 2.0 Flash (gemini-flash-latest)
+
+- **Security**: python-dotenv, .gitignore (Environment Variable Management)
 
 ## ✅ Milestone
 - Phase 1: Planning and building a Google cloud environment
@@ -58,3 +69,40 @@
 - **보안 사고 대응 및 Secret Management**: GitHub Secret Scanning을 통해 노출된 API Key를 즉시 무효화(Revoke)하고, .env 파일을 통한 환경 변수 관리 시스템을 도입하여 보안성을 강화했습니다.
 
 - **데이터 배치 처리(Batch Processing) 최적화**: API 호출 횟수 제한(Quota)을 극복하기 위해 루프 기반 호출 방식에서 전체 데이터를 하나의 컨텍스트로 묶어 처리하는 방식으로 로직을 개선하여 효율성을 80% 이상 높였습니다.
+
+## 🔥 Troubleshooting & Lessons Learned
+1. AI Model & Quota Management (404 & 429 Errors)
+Challenge: Encountered 404 errors due to deprecated model identifiers and 429 errors from free-tier quota limits.
+
+Resolution: Debugged using genai.list_models() to identify stable identifiers and switched to gemini-flash-latest. Optimized API consumption by implementing batch processing instead of individual row calls.
+
+2. Security Incident Response (Secret Management)
+Challenge: Exposed API keys detected by GitHub Secret Scanning.
+
+Resolution: Immediately revoked and rotated the exposed keys. Implemented a secure environment variable system using .env and cleaned git history to prevent future leaks.
+
+3. Data Normalization & Consistency
+Challenge: Inconsistent column counts due to empty cells in Google Sheets caused DataFrame construction errors.
+
+Resolution: Implemented a data padding logic to ensure structural consistency across all input rows.
+
+## 🧐 Self-Reflection
+Technical Growth
+System Integration: Gained hands-on experience in architecting a data pipeline that bridges Google Workspace and Generative AI services.
+
+Security Mindset: Developed a professional habit of "Security First" by managing sensitive credentials through environment variables.
+
+Problem-Solving Mindset
+User-Centric Development: Realized that developers are not just "coders" but "problem solvers" who bridge the gap between human inconvenience and technical solutions.
+
+Future Roadmap
+UI/UX Improvement: Plan to build a web interface using Streamlit or Flask for non-technical administrators.
+
+Real-time Triggers: Integrating Google Apps Script (GAS) for true real-time automation triggered by form submissions.
+
+## 📈 Results
+- **Efficiency**: Reduced survey analysis and summary time by over 95% compared to manual labor.
+- **Accuracy**: Successfully extracted nuanced insights based on nationality and gender, providing a data-driven foundation for future program planning.
+
+## ✨ Connect with Me
+- **GitHub Repository**: https://github.com/2daKaizen-gun/survey-auto-summarizer
