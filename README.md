@@ -4,21 +4,21 @@ An AI-powered insight pipeline that automates Google Forms data analysis and rep
 
 ## 🎯 Background & Motivation
 - The Context
-  Following a large-scale International Exchange Program at the university, an extensive satisfaction survey was conducted. Due to the diverse background of the participants, the survey collected a vast amount of subjective feedback in multiple languages.
+  - Following a large-scale International Exchange Program at the university, an extensive satisfaction survey was conducted. Due to the diverse background of the participants, the survey collected a vast amount of subjective feedback in multiple languages.
 
 - The Problem
-  Data Overload: Manually reading and summarizing hundreds of student reviews (minimum 100 characters each) required immense time and energy.
+  1. Data Overload: Manually reading and summarizing hundreds of student reviews (minimum 100 characters each) required immense time and energy.
 
-  Analysis Complexity: It was difficult for    humans to cross-analyze patterns based on nationality, gender, and participation status to find meaningful insights.
+  2. Analysis Complexity: It was difficult for    humans to cross-analyze patterns based on nationality, gender, and participation status to find meaningful insights.
 
-  Data Abandonment: Valuable feedback often remained scattered in spreadsheets, making it difficult to utilize as "lessons learned" for future program planning.
+  3. Data Abandonment: Valuable feedback often remained scattered in spreadsheets, making it difficult to utilize as "lessons learned" for future program planning.
 
 - The Solution
-  Automated Pipeline: Built a system that loads real-time data from Google Sheets for immediate processing.
+  1. Automated Pipeline: Built a system that loads real-time data from Google Sheets for immediate processing.
 
-  AI Cross-Analysis: Leveraged Gemini AI to analyze cultural differences (e.g., language barriers for specific nationalities) and participation trends.
+  2. AI Cross-Analysis: Leveraged Gemini AI to analyze cultural differences (e.g., language barriers for specific nationalities) and participation trends.
 
-  Automated Feedback: Analysis reports are automatically written back to the source spreadsheet for stakeholder review.
+  3. Automated Feedback: Analysis reports are automatically written back to the source spreadsheet for stakeholder review.
 
 - **데이터 소스**: 구글 폼 (행사 참석 여부 및 활동 마무리 후기)
 
