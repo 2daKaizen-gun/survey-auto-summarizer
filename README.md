@@ -40,15 +40,15 @@ An AI-powered insight pipeline that automates Google Forms data analysis and rep
 </p>
 
 ##  🛠️ Technology Stack
-- **Language**: ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) | Core Logic |
+- **Language**: ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 
-- **Data Handling**: Pandas(Normalization & Padding)
+- **Data Handling**: ![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white)(Normalization & Padding)
 
-- **API Integration**: Google Sheets API v4
+- **API Integration**: ![Google Sheets](https://img.shields.io/badge/Google%20Sheets-34A853?style=for-the-badge&logo=google-sheets&logoColor=white)(Google Sheets API v4)
 
-- **AI Engine**: Google Gemini 2.0 Flash (gemini-flash-latest)
+- **AI Engine**: ![Google Gemini](https://img.shields.io/badge/Google%20Gemini-4285F4?style=for-the-badge&logo=google-gemini&logoColor=white)(Google Gemini 2.0 Flash)
 
-- **Security**: python-dotenv, .gitignore (Environment Variable Management)
+- **Security**: ![Dotenv](https://img.shields.io/badge/python--dotenv-ecd53f?style=for-the-badge&logo=python&logoColor=black) ![Gitignore](https://img.shields.io/badge/.gitignore-000000?style=for-the-badge&logo=git&logoColor=white)
 
 ## ✅ Milestone
 - **Phase 1**: Planning and building a Google cloud environment
