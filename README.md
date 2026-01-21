@@ -40,7 +40,7 @@ An AI-powered insight pipeline that automates Google Forms data analysis and rep
 </p>
 
 ##  🛠️ Technology Stack
-- **Language**: Python 3.14.0
+- **Language**: <img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white">
 
 - **Data Handling**: Pandas(Normalization & Padding)
 
