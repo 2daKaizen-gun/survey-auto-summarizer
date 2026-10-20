@@ -46,7 +46,7 @@ An AI-powered insight pipeline that automates Google Forms data analysis and rep
 
 - **API Integration**: ![Google Sheets](https://img.shields.io/badge/Google%20Sheets-34A853?style=for-the-badge&logo=google-sheets&logoColor=white) | Google Sheets API v4
 
-- **AI Engine**: ![Google Gemini](https://img.shields.io/badge/Google%20Gemini-4285F4?style=for-the-badge&logo=google-gemini&logoColor=white) | Google Gemini 2.0 Flash
+- **AI Engine**: ![Google Gemini](https://img.shields.io/badge/Google%20Gemini-4285F4?style=for-the-badge&logo=google-gemini&logoColor=white) | Google Gemini (gemini-flash-latest)
 
 - **Security**: ![Dotenv](https://img.shields.io/badge/python--dotenv-ecd53f?style=for-the-badge&logo=python&logoColor=black) ![Gitignore](https://img.shields.io/badge/.gitignore-000000?style=for-the-badge&logo=git&logoColor=white)
 
@@ -79,7 +79,7 @@ An AI-powered insight pipeline that automates Google Forms data analysis and rep
 **2. Security Incident Response (Secret Management)**
   - **Challenge**: Exposed API keys detected by GitHub Secret Scanning.
 
-  - **Resolution**: Immediately revoked and rotated the exposed keys. Implemented a secure environment variable system using .env and cleaned git history to prevent future leaks.
+  - **Resolution**: Immediately revoked and rotated the exposed keys. Moved all secrets to .env (git-ignored) to prevent future leaks. The revoked key remains in old commits but no longer works.
 
 **3. Data Normalization & Consistency**
   - **Challenge**: Inconsistent column counts due to empty cells in Google Sheets caused DataFrame construction errors.
