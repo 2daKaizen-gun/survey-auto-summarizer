@@ -1,8 +1,10 @@
 import pandas as pd
 import os
+import time
 from datetime import datetime
 from dotenv import load_dotenv  # 환경 변수 로드용
 from google import genai
+from google.genai import errors as genai_errors
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
@@ -26,6 +28,10 @@ REQUIRED_COLUMNS = ['국적', '성별', '마지막 행사 참석 여부', FEEDBA
 # 보안 강화: 코드가 아닌 환경 변수에서 키를 가져옵니다.
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL") or 'gemini-flash-latest'
+# 할당량 초과(429)·일시적 서버 오류(503) 시 재시도 설정
+MAX_RETRIES = 3
+RETRY_BASE_SECONDS = 10
+RETRYABLE_STATUS_CODES = (429, 503)
 
 def validate_config():
     """실행 전 필수 설정이 준비되었는지 확인합니다."""
@@ -76,9 +82,17 @@ def generate_batch_insight(df):
     - "분석 결과입니다" 같은 군더더기 없이 본론만 바로 시작할 것.
     """
     
-    # AI 호출
-    response = client.models.generate_content(model=GEMINI_MODEL, contents=prompt)
-    return response.text.strip()
+    # AI 호출 (일시적 오류는 대기 시간을 늘려가며 재시도)
+    for attempt in range(1, MAX_RETRIES + 1):
+        try:
+            response = client.models.generate_content(model=GEMINI_MODEL, contents=prompt)
+            return response.text.strip()
+        except genai_errors.APIError as e:
+            if e.code not in RETRYABLE_STATUS_CODES or attempt == MAX_RETRIES:
+                raise
+            wait = RETRY_BASE_SECONDS * 2 ** (attempt - 1)
+            print(f"Gemini API 일시 오류({e.code}). {wait}초 후 재시도합니다... ({attempt}/{MAX_RETRIES - 1})")
+            time.sleep(wait)
 
 def ensure_report_sheet(service, spreadsheet_id):
     """리포트 탭이 없으면 새로 만듭니다."""
@@ -116,7 +130,7 @@ def update_sheet_report(service, spreadsheet_id, report_text, response_count):
     service.spreadsheets().values().update(
         spreadsheetId=spreadsheet_id,
         range=target_range,
-        valueInputOption="USER_ENTERED", # 줄바꿈(\n) 등을 시트에서 인식하도록 설정
+        valueInputOption="RAW", # AI 출력이 '='로 시작해도 수식으로 해석되지 않도록 원문 그대로 기록
         body=body
     ).execute()
 
