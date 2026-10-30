@@ -9,7 +9,7 @@ An AI-powered insight pipeline that automates Google Forms data analysis and rep
 - **The Problem**
   1. Data Overload: Manually reading and summarizing hundreds of student reviews (minimum 100 characters each) required immense time and energy.
 
-  2. Analysis Complexity: It was difficult for    humans to cross-analyze patterns based on nationality, gender, and participation status to find meaningful insights.
+  2. Analysis Complexity: It was difficult for humans to cross-analyze patterns based on nationality, gender, and participation status to find meaningful insights.
 
   3. Data Abandonment: Valuable feedback often remained scattered in spreadsheets, making it difficult to utilize as "lessons learned" for future program planning.
 
@@ -41,7 +41,7 @@ An AI-powered insight pipeline that automates Google Forms data analysis and rep
 </p>
 
 ##  🛠️ Technology Stack
-- **Language**: ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+- **Language**: ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) | Python 3.11+ (developed on 3.14)
 
 - **Data Handling**: ![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white) | Normalization & Padding
 
@@ -52,14 +52,15 @@ An AI-powered insight pipeline that automates Google Forms data analysis and rep
 - **Security**: ![Dotenv](https://img.shields.io/badge/python--dotenv-ecd53f?style=for-the-badge&logo=python&logoColor=black) ![Gitignore](https://img.shields.io/badge/.gitignore-000000?style=for-the-badge&logo=git&logoColor=white)
 
 ## 🚀 Getting Started
-1. Create a virtual environment and install dependencies
+1. Create a virtual environment and install dependencies (Python 3.11+ required)
    ```bash
    python -m venv venv
    venv\Scripts\activate        # macOS/Linux: source venv/bin/activate
    pip install -r requirements.txt
    ```
 2. Place the service account key file as `credentials.json` in the project root, and share the spreadsheet with the service account email.
-3. Copy `.env.example` to `.env` and fill in `GEMINI_API_KEY` (other values are optional).
+3. Copy `.env.example` to `.env` and fill in `GEMINI_API_KEY` and `SPREADSHEET_ID` (other values are optional).
+   - `SPREADSHEET_ID` is the part of the sheet URL between `/d/` and `/edit`.
 4. Run
    ```bash
    python main.py
@@ -79,7 +80,7 @@ An AI-powered insight pipeline that automates Google Forms data analysis and rep
   - [x] Phase 2-3: Data filtering (Excluding empty rows & required column validation)
   - [x] Phase 2-4: Error Handling (Try-Except, retry with exponential backoff)
 
-- **Phase 3**: AI Summary Engine and Results Feedback(Next)
+- **Phase 3**: AI Summary Engine and Results Feedback
   - [x] Phase 3-1: Prompt Engineering
   - [x] Phase 3-2: Interworking with AI API
   - [x] Phase 3-3: Automatic recording of results
@@ -94,7 +95,7 @@ An AI-powered insight pipeline that automates Google Forms data analysis and rep
 **2. Security Incident Response (Secret Management)**
   - **Challenge**: Exposed API keys detected by GitHub Secret Scanning.
 
-  - **Resolution**: Immediately revoked and rotated the exposed keys. Moved all secrets to .env (git-ignored) to prevent future leaks. The revoked key remains in old commits but no longer works.
+  - **Resolution**: Immediately revoked and rotated the exposed keys. Moved all secrets to .env (git-ignored) to prevent future leaks. The revoked key remains in old commits but no longer works, so history rewriting was deemed unnecessary (see [SECURITY.md](SECURITY.md)).
 
 **3. Data Normalization & Consistency**
   - **Challenge**: Inconsistent column counts due to empty cells in Google Sheets caused DataFrame construction errors.

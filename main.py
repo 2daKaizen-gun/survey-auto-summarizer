@@ -14,7 +14,7 @@ load_dotenv()
 # 1. 설정 정보 (환경 변수 우선, 없으면 기본값 사용)
 # (빈 문자열로 설정된 경우에도 기본값을 쓰도록 `or` 사용)
 SERVICE_ACCOUNT_FILE = os.getenv("SERVICE_ACCOUNT_FILE") or 'credentials.json'
-SPREADSHEET_ID = os.getenv("SPREADSHEET_ID") or '1Ceks16DvtW0FduRUMnHxK6GYcx2EPXocZlz7KPawZMY'
+SPREADSHEET_ID = os.getenv("SPREADSHEET_ID")
 SHEET_NAME = os.getenv("SHEET_NAME") or '설문지 응답 시트1'
 RANGE_NAME = f'{SHEET_NAME}!A1:H' # 전체 행을 읽어오도록 설정
 # 리포트는 응답 시트와 분리된 탭에 기록 (재실행 시 응답 데이터와 섞이지 않도록)
@@ -38,6 +38,8 @@ def validate_config():
     errors = []
     if not GEMINI_API_KEY:
         errors.append("GEMINI_API_KEY가 설정되지 않았습니다. .env 파일을 확인하세요.")
+    if not SPREADSHEET_ID:
+        errors.append("SPREADSHEET_ID가 설정되지 않았습니다. .env 파일에 시트 URL의 /d/ 와 /edit 사이 값을 넣으세요.")
     if not os.path.exists(SERVICE_ACCOUNT_FILE):
         errors.append(f"서비스 계정 키 파일({SERVICE_ACCOUNT_FILE})을 찾을 수 없습니다.")
     for message in errors:
@@ -86,13 +88,23 @@ def generate_batch_insight(df):
     for attempt in range(1, MAX_RETRIES + 1):
         try:
             response = client.models.generate_content(model=GEMINI_MODEL, contents=prompt)
-            return response.text.strip()
+            break
         except genai_errors.APIError as e:
             if e.code not in RETRYABLE_STATUS_CODES or attempt == MAX_RETRIES:
                 raise
             wait = RETRY_BASE_SECONDS * 2 ** (attempt - 1)
             print(f"Gemini API 일시 오류({e.code}). {wait}초 후 재시도합니다... ({attempt}/{MAX_RETRIES - 1})")
             time.sleep(wait)
+
+    # 안전 정책 차단 등으로 본문 없이 응답이 오는 경우 원인을 안내
+    if not response.text:
+        block_reason = getattr(response.prompt_feedback, 'block_reason', None)
+        finish_reason = response.candidates[0].finish_reason if response.candidates else None
+        raise ValueError(
+            f"Gemini가 빈 응답을 반환했습니다 (차단 사유: {block_reason}, 종료 사유: {finish_reason}). "
+            "응답 데이터나 프롬프트에 정책 위반 소지가 있는지 확인하세요."
+        )
+    return response.text.strip()
 
 def ensure_report_sheet(service, spreadsheet_id):
     """리포트 탭이 없으면 새로 만듭니다."""

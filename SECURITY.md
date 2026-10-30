@@ -9,9 +9,9 @@
 
 ## 2. Security Incident Response (보안 사고 대응)
 만약 API 키가 외부에 노출되는 사고가 발생할 경우, 즉시 대응합니다:
-1. **Key Rotation**: 노출된 API 키를 Google Cloud Console / AI Studio에서 즉시 삭제 및 무효화합니다.
-2. **New Key Issuance**: 새로운 키를 발급받아 로컬 환경 변수를 업데이트합니다.
-3. **Commit History Cleanup**: `git push --force` 등을 사용하여 노출된 기록이 포함된 이전 커밋을 제거하거나 덮어씁니다.
+1. **Key Rotation (최우선)**: 노출된 API 키를 Google Cloud Console / AI Studio에서 즉시 삭제 및 무효화합니다. 공개된 키는 이미 복제되었을 수 있으므로, 이력 삭제보다 무효화가 실질적인 대응입니다.
+2. **New Key Issuance**: 새로운 키를 발급받아 로컬 `.env`를 업데이트합니다.
+3. **Commit History Cleanup (선택)**: 무효화된 키는 이전 커밋에 남아 있어도 사용할 수 없으므로, 협업자 이력 충돌 위험이 있는 force push 기반 이력 재작성은 필요한 경우에만 수행합니다.
 
 ## 3. Vulnerability Reporting (취약점 보고)
 프로젝트 내에서 보안 취약점을 발견하신 경우, 이슈(Issue)를 생성하거나 아래 연락처로 연락해 주시면 감사하겠습니다.
