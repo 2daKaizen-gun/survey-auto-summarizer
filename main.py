@@ -8,15 +8,28 @@ from googleapiclient.discovery import build
 # .env 파일에 저장된 환경 변수를 불러옵니다.
 load_dotenv()
 
-# 1. 설정 정보
-SERVICE_ACCOUNT_FILE = 'credentials.json'
-SPREADSHEET_ID = '1Ceks16DvtW0FduRUMnHxK6GYcx2EPXocZlz7KPawZMY' 
-RANGE_NAME = '설문지 응답 시트1!A1:H' # 전체 행을 읽어오도록 설정
+# 1. 설정 정보 (환경 변수 우선, 없으면 기본값 사용)
+# (빈 문자열로 설정된 경우에도 기본값을 쓰도록 `or` 사용)
+SERVICE_ACCOUNT_FILE = os.getenv("SERVICE_ACCOUNT_FILE") or 'credentials.json'
+SPREADSHEET_ID = os.getenv("SPREADSHEET_ID") or '1Ceks16DvtW0FduRUMnHxK6GYcx2EPXocZlz7KPawZMY'
+SHEET_NAME = os.getenv("SHEET_NAME") or '설문지 응답 시트1'
+RANGE_NAME = f'{SHEET_NAME}!A1:H' # 전체 행을 읽어오도록 설정
 
 # Gemini API 설정
 # 보안 강화: 코드가 아닌 환경 변수에서 키를 가져옵니다.
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-GEMINI_MODEL = 'gemini-flash-latest'
+GEMINI_MODEL = os.getenv("GEMINI_MODEL") or 'gemini-flash-latest'
+
+def validate_config():
+    """실행 전 필수 설정이 준비되었는지 확인합니다."""
+    errors = []
+    if not GEMINI_API_KEY:
+        errors.append("GEMINI_API_KEY가 설정되지 않았습니다. .env 파일을 확인하세요.")
+    if not os.path.exists(SERVICE_ACCOUNT_FILE):
+        errors.append(f"서비스 계정 키 파일({SERVICE_ACCOUNT_FILE})을 찾을 수 없습니다.")
+    for message in errors:
+        print(f"설정 오류: {message}")
+    return not errors
 
 def get_sheets_service():
     """구글 시트 API 인증 및 서비스 생성"""
@@ -86,6 +99,9 @@ def update_sheet_report(service, spreadsheet_id, report_text, last_row):
     print(f"구글 시트 {target_range} 위치에 리포트 기록을 완료했습니다.")
 
 def main():
+    if not validate_config():
+        return
+
     # [1] 데이터 로드
     try:
         service = get_sheets_service()
