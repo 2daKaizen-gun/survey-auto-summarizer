@@ -41,15 +41,15 @@ An AI-powered insight pipeline that automates Google Forms data analysis and rep
 </p>
 
 ##  🛠️ Technology Stack
-- **Language**: Python 3.14.0
+- **Language**: ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 
-- **Data Handling**: Pandas(Normalization & Padding)
+- **Data Handling**: ![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white) | Normalization & Padding
 
-- **API Integration**: Google Sheets API v4
+- **API Integration**: ![Google Sheets](https://img.shields.io/badge/Google%20Sheets-34A853?style=for-the-badge&logo=google-sheets&logoColor=white) | Google Sheets API v4
 
-- **AI Engine**: Google Gemini via `google-genai` SDK (default model: `gemini-flash-latest`)
+- **AI Engine**: ![Google Gemini](https://img.shields.io/badge/Google%20Gemini-4285F4?style=for-the-badge&logo=google-gemini&logoColor=white) | Google Gemini via `google-genai` SDK (default model: `gemini-flash-latest`)
 
-- **Security**: python-dotenv, .gitignore (Environment Variable Management)
+- **Security**: ![Dotenv](https://img.shields.io/badge/python--dotenv-ecd53f?style=for-the-badge&logo=python&logoColor=black) ![Gitignore](https://img.shields.io/badge/.gitignore-000000?style=for-the-badge&logo=git&logoColor=white)
 
 ## 🚀 Getting Started
 1. Create a virtual environment and install dependencies
@@ -94,7 +94,7 @@ An AI-powered insight pipeline that automates Google Forms data analysis and rep
 **2. Security Incident Response (Secret Management)**
   - **Challenge**: Exposed API keys detected by GitHub Secret Scanning.
 
-  - **Resolution**: Immediately revoked and rotated the exposed keys. Implemented a secure environment variable system using .env and cleaned git history to prevent future leaks.
+  - **Resolution**: Immediately revoked and rotated the exposed keys. Moved all secrets to .env (git-ignored) to prevent future leaks. The revoked key remains in old commits but no longer works.
 
 **3. Data Normalization & Consistency**
   - **Challenge**: Inconsistent column counts due to empty cells in Google Sheets caused DataFrame construction errors.
