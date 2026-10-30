@@ -2,4 +2,5 @@ google-api-python-client==2.188.0
 google-auth==2.62.0
 google-genai==2.34.0
 pandas==2.3.3
+pydantic==2.12.5
 python-dotenv==1.2.1
