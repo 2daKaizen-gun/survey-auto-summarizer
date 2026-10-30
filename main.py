@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+from datetime import datetime
 from dotenv import load_dotenv  # 환경 변수 로드용
 from google import genai
 from google.oauth2 import service_account
@@ -14,6 +15,12 @@ SERVICE_ACCOUNT_FILE = os.getenv("SERVICE_ACCOUNT_FILE") or 'credentials.json'
 SPREADSHEET_ID = os.getenv("SPREADSHEET_ID") or '1Ceks16DvtW0FduRUMnHxK6GYcx2EPXocZlz7KPawZMY'
 SHEET_NAME = os.getenv("SHEET_NAME") or '설문지 응답 시트1'
 RANGE_NAME = f'{SHEET_NAME}!A1:H' # 전체 행을 읽어오도록 설정
+# 리포트는 응답 시트와 분리된 탭에 기록 (재실행 시 응답 데이터와 섞이지 않도록)
+REPORT_SHEET_NAME = os.getenv("REPORT_SHEET_NAME") or 'AI 리포트'
+
+# 분석에 필요한 설문 컬럼
+FEEDBACK_COLUMN = '느낀 점 (100자 이상)'
+REQUIRED_COLUMNS = ['국적', '성별', '마지막 행사 참석 여부', FEEDBACK_COLUMN]
 
 # Gemini API 설정
 # 보안 강화: 코드가 아닌 환경 변수에서 키를 가져옵니다.
@@ -49,7 +56,7 @@ def generate_batch_insight(df):
     # 1. 데이터를 AI가 읽기 좋은 텍스트 리스트로 변환 (데이터 직렬화)
     data_context = ""
     for _, row in df.iterrows():
-        data_context += f"- [정보: {row['국적']}/{row['성별']}/{row['마지막 행사 참석 여부']}] 내용: {row['느낀 점 (100자 이상)']}\n"
+        data_context += f"- [정보: {row['국적']}/{row['성별']}/{row['마지막 행사 참석 여부']}] 내용: {row[FEEDBACK_COLUMN]}\n"
 
     # 2. 기획안을 반영한 정교한 프롬프트 (Phase 3-1 설계 반영)
     prompt = f"""
@@ -73,30 +80,47 @@ def generate_batch_insight(df):
     response = client.models.generate_content(model=GEMINI_MODEL, contents=prompt)
     return response.text.strip()
 
-def update_sheet_report(service, spreadsheet_id, report_text, last_row):
+def ensure_report_sheet(service, spreadsheet_id):
+    """리포트 탭이 없으면 새로 만듭니다."""
+    meta = service.spreadsheets().get(
+        spreadsheetId=spreadsheet_id, fields='sheets.properties.title'
+    ).execute()
+    titles = [s['properties']['title'] for s in meta.get('sheets', [])]
+    if REPORT_SHEET_NAME not in titles:
+        service.spreadsheets().batchUpdate(
+            spreadsheetId=spreadsheet_id,
+            body={'requests': [{'addSheet': {'properties': {'title': REPORT_SHEET_NAME}}}]}
+        ).execute()
+        print(f"'{REPORT_SHEET_NAME}' 탭을 새로 만들었습니다.")
+
+def update_sheet_report(service, spreadsheet_id, report_text, response_count):
     """
-    생성된 종합 리포트를 데이터 하단에 기록합니다.
+    생성된 종합 리포트를 리포트 전용 탭에 기록합니다. (이전 리포트는 덮어씀)
     """
-    # 데이터가 끝나는 행(last_row)보다 2칸 아래부터 기록 시작
-    target_row = last_row + 3 
-    target_range = f'설문지 응답 시트1!A{target_row}' 
-    
+    ensure_report_sheet(service, spreadsheet_id)
+    target_range = f"'{REPORT_SHEET_NAME}'!A1"
+
     body = {
         'values': [
-            ["AI 종합 인사이트 리포트"], # 제목 행 (A열)
-            [report_text]              # 내용 행 (A열)
+            ["AI 종합 인사이트 리포트"],                                    # 제목 행
+            ["생성 시각", datetime.now().strftime('%Y-%m-%d %H:%M:%S')],
+            ["분석 응답 수", response_count],
+            [report_text]                                                   # 내용 행
         ]
     }
-    
-    # 구글 시트에 데이터 쓰기 실행
+
+    # 이전 리포트를 지운 뒤 새로 기록
+    service.spreadsheets().values().clear(
+        spreadsheetId=spreadsheet_id, range=f"'{REPORT_SHEET_NAME}'", body={}
+    ).execute()
     service.spreadsheets().values().update(
         spreadsheetId=spreadsheet_id,
         range=target_range,
         valueInputOption="USER_ENTERED", # 줄바꿈(\n) 등을 시트에서 인식하도록 설정
         body=body
     ).execute()
-    
-    print(f"구글 시트 {target_range} 위치에 리포트 기록을 완료했습니다.")
+
+    print(f"구글 시트 '{REPORT_SHEET_NAME}' 탭에 리포트 기록을 완료했습니다.")
 
 def main():
     if not validate_config():
@@ -126,6 +150,17 @@ def main():
         # Pandas DataFrame 생성
         df = pd.DataFrame(normalized_data, columns=headers)
 
+        missing = [col for col in REQUIRED_COLUMNS if col not in df.columns]
+        if missing:
+            print(f"시트에 필요한 컬럼이 없습니다: {', '.join(missing)}")
+            return
+
+        # 소감이 비어 있는 행(빈 행, 이전 버전이 시트 하단에 남긴 리포트 행 등)은 분석에서 제외
+        df = df[df[FEEDBACK_COLUMN].str.strip() != '']
+        if df.empty:
+            print("분석할 응답이 없습니다.")
+            return
+
         # [3] 데이터 현황 확인
         print(f"총 {len(df)}개의 데이터를 기반으로 종합 분석을 시작합니다...")
 
@@ -137,9 +172,8 @@ def main():
             final_report = generate_batch_insight(df)
             print("-" * 50 + "\n" + final_report + "\n" + "-" * 50)
             
-            # [5] 시트에 결과 기록 
-            last_data_row = len(df) + 1 
-            update_sheet_report(service, SPREADSHEET_ID, final_report, last_data_row)
+            # [5] 시트에 결과 기록
+            update_sheet_report(service, SPREADSHEET_ID, final_report, len(df))
             
         except Exception as ai_error:
             print(f"AI 분석/기록 에러: {ai_error}")
