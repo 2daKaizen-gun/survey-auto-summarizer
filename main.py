@@ -1,8 +1,7 @@
 import pandas as pd
-# import time
 import os
 from dotenv import load_dotenv  # 환경 변수 로드용
-import google.generativeai as genai
+from google import genai
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
@@ -17,7 +16,7 @@ RANGE_NAME = '설문지 응답 시트1!A1:H' # 전체 행을 읽어오도록 설
 # Gemini API 설정
 # 보안 강화: 코드가 아닌 환경 변수에서 키를 가져옵니다.
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-genai.configure(api_key=GEMINI_API_KEY)
+GEMINI_MODEL = 'gemini-flash-latest'
 
 def get_sheets_service():
     """구글 시트 API 인증 및 서비스 생성"""
@@ -32,8 +31,8 @@ def generate_batch_insight(df):
     """
     모든 응답 데이터를 분석하여 국적/성별/참석여부별 종합 리포트를 생성합니다.
     """
-    model = genai.GenerativeModel('gemini-flash-latest')
-    
+    client = genai.Client(api_key=GEMINI_API_KEY)
+
     # 1. 데이터를 AI가 읽기 좋은 텍스트 리스트로 변환 (데이터 직렬화)
     data_context = ""
     for _, row in df.iterrows():
@@ -58,7 +57,7 @@ def generate_batch_insight(df):
     """
     
     # AI 호출
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(model=GEMINI_MODEL, contents=prompt)
     return response.text.strip()
 
 def update_sheet_report(service, spreadsheet_id, report_text, last_row):
