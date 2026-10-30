@@ -3,7 +3,8 @@
 이 프로젝트는 사용자 데이터 및 API 인증 정보의 안전한 관리를 중요시 합니다.
 
 ## 1. Secret Management (인증 정보 관리)
-- **Environment Variables**: Gemini API 및 Google Sheets API 인증을 위한 키는 코드에 직접 노출하지 않고 `.env` 파일을 통해 관리합니다.
+- **Environment Variables**: Gemini API 및 Google Sheets API 인증을 위한 키는 코드에 직접 노출하지 않고 `.env` 파일을 통해 관리합니다. 필요한 키 이름은 값이 비어 있는 `.env.example`에서 확인할 수 있습니다.
+- **Data Minimization**: AI 분석에는 국적·성별·참석 여부·소감만 전달하며, 이름과 학번은 외부 API로 전송하지 않습니다.
 - **Git Ignore**: `.env` 파일과 `credentials.json` 등 민감한 파일은 `.gitignore`에 등록하여 원격 저장소(GitHub)에 업로드되지 않도록 철저히 차단합니다.
 
 ## 2. Security Incident Response (보안 사고 대응)
